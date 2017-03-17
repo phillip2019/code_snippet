@@ -41,3 +41,8 @@ def resident(since=0.0):
 def stacksize(since=0.0):
     """Return stack size in bytes."""
     return _vm_by('VmStk:') - since
+
+if __name__ == "__main__":
+    print("VmSize={VmSize}kb, Vm resident={VmRSS}kb, Vm stack={VmStack}".format({"VmSize": memory(),
+                                                                                 "VmRSS": resident(),
+                                                                                 "VmStk": stacksize()}))
