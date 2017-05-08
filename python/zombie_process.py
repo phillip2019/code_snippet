@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Date    : 2017-05-08 13:27:51
-# @Author  : xiaowei.song (xiaowei.song@tongdun.cn)
+# @Author  : wuyan
 # @Version : $Id$
 
 from __future__ import absolute_import
