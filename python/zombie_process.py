@@ -11,7 +11,9 @@ from __future__ import unicode_literals
 import os
 import time
 
+
 def main():
+    """Main."""
     pid = os.fork()
     if 0 > pid:
         print('fork err:')  # fork failed
@@ -20,7 +22,7 @@ def main():
         exit(0)
     else:
         print('I am in parent process, sleep for '
-        	  ' 1 minute...ZZ...')  # parent process
+              ' 1 minute...ZZ...')  # parent process
         time.sleep(60)
         print('I am in process, and parent exit!')
         exit(0)
