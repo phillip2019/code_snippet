@@ -21,9 +21,12 @@ def main():
         print('I am in child process, and child exit!')  # child process
         exit(0)
     else:
+        print('Child process pid={}'.format(pid))
         print('I am in parent process, sleep for '
               ' 1 minute...ZZ...')  # parent process
-        time.sleep(60)
+        pid, status = os.wait()
+        time.sleep(100)
+        print('pid={}, status={}'.format(pid, status))
         print('I am in process, and parent exit!')
         exit(0)
 

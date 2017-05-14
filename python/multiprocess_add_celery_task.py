@@ -18,13 +18,16 @@ from multiprocessing import Pool
 app = Flask('app')
 
 app.config.update(
-    CELERY_BROKER_URL='redis://10.57.2.108:6379/0',
-    CELERY_RESULT_BACKEND='redis://10.57.2.108:6379/1',
+    # CELERY_BROKER_URL='redis://10.57.2.108:6379/0',
+    # CELERY_RESULT_BACKEND='redis://10.57.2.108:6379/1',
+    CELERY_BROKER_URL='redis://127.0.0.1:6379/0',
+    CELERY_RESULT_BACKEND='redis://127.0.0.1:6379/1',
     CELERY_TASK_SERIALIZER='json',
     CELERY_ACCEPT_CONTENT=['pickle', 'json', 'msgpack', 'yaml'],
     CELERY_RESULT_SERIALIZER='json',
     CELERY_TIMEZONE='Asia/Shanghai',
     CELERY_ENABLE_UTC=True,
+    CELERY_SEND_TASK_SENT_EVENT=True,
 )
 
 
