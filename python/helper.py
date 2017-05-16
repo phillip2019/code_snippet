@@ -157,9 +157,8 @@ def run_dml(command_, dml):
     """Run dml create tables."""
     command_ = command_.split(' ')
     command_.append(dml)
-    out_bytes = os.system('mysql -uroot -p123456 test1 < /tmp/test/dml.sql')
-    print(out_bytes)
-    # print(out_bytes.returncode)
+    out_bytes = subprocess.run('mysql -uroot -p123456 test1 < /tmp/test/dml.sql'.split(' '))
+    print(out_bytes.returncode)
 
 
 if __name__ == '__main__':
