@@ -7,6 +7,7 @@
 import os
 import logging
 import shutil
+import subprocess
 from datetime import datetime
 from helper import prepare_data, parser, random_string
 
@@ -21,7 +22,8 @@ def main():
     2.目标文件的拷贝，在save_path生成一个副本
     """
     # TODO(wuyan)为了开发过程中减少环境的处理，先自动删除生成的目录
-    os.system(r'rm -fr /tmp/test')
+    # os.system(r'rm -fr /tmp/test')
+    subprocess.run(['rm', '-fr', r'/tmp/test'])
 
     time_b = datetime.utcnow()
     path = random_string(10, repeat=True, type_=1)
@@ -49,10 +51,11 @@ def main():
 
     print(tables_relation)
     print('#' * 40)
-    print(parser(tables_relation))
+    tables_relation = parser(tables_relation)
     time_e = datetime.utcnow()
     print(time_e - time_b)
 
 
 if __name__ == '__main__':
     main()
+    # pass
