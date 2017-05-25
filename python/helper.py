@@ -5,6 +5,10 @@
 # @Version : V0.1
 """帮助模块，提供一些算法，数据抽取方式."""
 
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import os
 import logging
 import re
@@ -107,6 +111,19 @@ def prepare_data(abs_path, abs_file):
     dml_ref_re = r".*CONSTRAINT `.*` FOREIGN KEY .* REFERENCES `(.*)` .*"
     ddl_begin_re = r'^LOCK TABLES `(.*)` WRITE;$'
     ddl_end_re = r'UNLOCK TABLES;'
+    sql_set_check = u"""
+    /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+    /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+    /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+    /*!40101 SET NAMES utf8 */;
+    /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+    /*!40103 SET TIME_ZONE='+00:00' */;
+    /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+    /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS,
+    FOREIGN_KEY_CHECKS=0 */;
+    /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+    /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+                     """
     dml = {}    # 存储dml代码
     tables_relation = []
     tables_name = []
@@ -114,6 +131,7 @@ def prepare_data(abs_path, abs_file):
     with open(abs_file, 'r') as f:
         dml_buffer = []
         dml_f = open(os.path.join(abs_path, 'dml.sql'), 'wt')
+        dml_f.write(sql_set_check)
         for line in f:
             if re.match(dml_begin_re, line):
                 is_dml, is_ddl = True, False
@@ -157,8 +175,8 @@ def run_dml(command_, dml):
     """Run dml create tables."""
     command_ = command_.split(' ')
     command_.append(dml)
-    out_bytes = subprocess.run('mysql -uroot -p123456 test1 < /tmp/test/dml.sql'.split(' '))
-    print(out_bytes.returncode)
+    out_bytes = subprocess.check_output('mysql -uroot -p123456 test2 < /tmp/test/dml.sql', shell=True)
+    print(out_bytes.decode('utf-8'))
 
 
 if __name__ == '__main__':
