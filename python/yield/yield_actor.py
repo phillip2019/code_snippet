@@ -17,7 +17,7 @@ import threading
 
 class ActorScheduler(object):
     def __init__(self):
-        self._actors = {}           # Mapping of names to actors
+        self._actors = {}           # Mapping of name
         self._msg_queue = deque()   # Message queue
 
     def new_actor(self, name, actor):
@@ -74,14 +74,38 @@ class ThreadPrinter(threading.Thread):
     def run(self):
         while True:
             num = self.queue.get()
-            print('Threading got:', num)
+            # print('Threading got:', num)
             self.queue.task_done()
+
+
+class ThreadSum(threading.Thread):
+    """Get the sum of the count number."""
+    def __init__(self, counter_num, out_queue):
+        super(ThreadSum, self).__init__()
+        self.counter_num = counter_num
+        self.counter_sum = 0
+        self.out_queue = out_queue
+
+    def run(self):
+        for i in xrange(self.counter_num, 0, -1):
+            self.counter_sum += i
+        self.out_queue.put(self.counter_sum)
 
 
 def printer():
     while True:
         msg = yield
-        print('Got:', msg)
+        # print('Got:', msg)
+
+
+sum_ = 0
+
+
+def sum_counter():
+    global sum_
+    while True:
+        n = yield
+        sum_ += n
 
 
 def counter(sched):
@@ -92,6 +116,9 @@ def counter(sched):
             break
         # Send to the printer task
         sched.send('printer', n)
+
+        # Send to the sum task
+        sched.send('sum_counter', n)
 
         # Send the next count to the counter task (recursive)
         sched.send('counter', n - 1)
@@ -106,27 +133,35 @@ if __name__ == '__main__':
     # Create the initial actors
     sched.new_actor('printer', printer())
     sched.new_actor('counter', counter(sched))
+    sched.new_actor('sum_counter', sum_counter())
 
     # Send an initial message to the counter to initiate
     sched.send('counter', COUNTER_NUM)
     sched.run()
     e_time = datetime.now()
+    print('Actor Counter Sum: %d' % sum_)
     print('Yield cost %s %s' % ((e_time - b_time), '#' * 30))
 
     b2_time = datetime.now()
     # task_queue = Queue.Queue()
     print_queue = Queue.Queue()
+    out_queue = Queue.Queue()
     # for i in xrange(COUNTER_NUM, 0, -1):
-        # task_queue.put(i)
+    #     task_queue.put(i)
     ts = []
     t_counter = ThreadCounter(COUNTER_NUM, print_queue)
     ts.append(t_counter)
     t_printer = ThreadPrinter(print_queue)
     ts.append(t_printer)
+    t_sum = ThreadSum(COUNTER_NUM, out_queue)
+    ts.append(t_sum)
     for t in ts:
         t.setDaemon(True)
         t.start()
     # task_queue.join()
     print_queue.join()
+    print('Threading Counter Sum: %d' % out_queue.get())
+    out_queue.task_done()
+    out_queue.join()
     e2_time = datetime.now()
     print('Threading cost %s %s' % ((e2_time - b2_time), '#' * 30))
