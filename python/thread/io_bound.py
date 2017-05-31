@@ -19,13 +19,15 @@ monkey.patch_all()
 import gevent  # noqa
 
 # 忽略ssl校验，避免抛出CERTIFICATE_VERIFY_FAILED错误
-ssl._create_default_https_context = ssl._create_unverified_context
+# ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def urllib2_(url):
     """Urllib open."""
     try:
-        urllib2.urlopen(url, timeout=10).read()
+        context = ssl._create_unverified_context()
+        urllib2.urlopen(url, timeout=10, context=context).read()
+        # urllib2.urlopen(url, timeout=10).read()
         # time.sleep(10)
     except Exception, e:
         print(e)
