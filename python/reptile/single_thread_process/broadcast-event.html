@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>broadcastbroadcast</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="./sytles/demo.css" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+    <input v-model="msg" />
+    <button v-on:click="notify">Broadcast Event</button>
+    <child-component></child-component>
+</div>
+
+<template id="child-component">
+    <ul>
+        <li v-for="item in messages">
+            父组件录入了信息：{{ item }}
+        </li>
+    </ul>
+</template>
+    
+</body>
+<script src="js/vue.js"></script>
+<script>
+    // 注册子组件
+    Vue.component('child-component', {
+        template: '#child-component',
+        data: function() {
+            return {
+                messages: []
+            }
+        },
+        events: {
+            'parent-msg': function(msg) {
+                this.messages.push(msg)
+            }
+        }
+    })
+    // 初始化父组件
+    new Vue({
+        el: '#app',
+        data: {
+            msg: ''
+        },
+        methods: {
+            notify: function() {
+                if (this.msg.trim()) {
+                    this.$broadcast('parent-msg', this.msg)
+                }
+            }
+        }
+    })
+</script>
+</html>
