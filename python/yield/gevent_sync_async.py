@@ -11,7 +11,6 @@ from __future__ import unicode_literals
 # import os
 
 import gevent
-import random
 
 
 def task(pid):
