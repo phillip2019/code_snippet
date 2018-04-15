@@ -1,0 +1,4 @@
+{
+  "test_client.py::TestClient::test_fail_request_with_patch_object2": true,
+  "test_client.py::test_func_fail": true
+}

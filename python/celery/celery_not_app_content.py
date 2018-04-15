@@ -12,6 +12,7 @@ from __future__ import unicode_literals
 
 from celery import Celery
 from celery.app.log import Logging
+from celery.utils.log import get_task_logger
 
 from datetime import timedelta
 from flask import Flask
@@ -25,25 +26,36 @@ def create_db():
     return SQLAlchemy()
 
 
-celery = Celery('tasks')
+format = '%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - '\
+         '%(lineno)s - %(message)s'
+logging.basicConfig(filename='app-errors.log',
+                    filemode='a',
+                    format=format,
+                    level=logging.DEBUG)
+
+console = logging.StreamHandler()
+console.setLevel(logging.DEBUG)
+logging.getLogger(__name__).addHandler(console)
+
+celery = Celery(__name__)
 db = SQLAlchemy()
 
 
 @celery.task
 def beat_query():
     """Beat."""
-    # logger = getLogger(__name__)
-    with app.app_context():
-        print('1111')
-        logger('2222')
-        result = db.session.execute('select count(1) from user')
-        logger.info(result)
+    # logger = get_task_logger(__name__)
+    print('1111')
+    logger = task_logger
+    logger.info('Before query user table.')
+    result = db.session.execute('select count(1) from user')
+    logger.error(result)
     return 255
 
 
 def create_app():
     """App Factory."""
-    app = Flask('app')
+    app = Flask(__name__)
     app.config.update({
         'SQLALCHEMY_DATABASE_URI':
         'mysql://root:123456@localhost/test?charset=utf8',
@@ -67,17 +79,20 @@ def create_app():
     handler = logging.handlers.TimedRotatingFileHandler('flask.log', when='d',
                                                         backupCount=7)
     handler.setLevel(logging.DEBUG)
-    logging_format = logging.Formatter(
-        '%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - '
-        '%(lineno)s - %(message)s')
+    logging_format = logging.Formatter(format)
     handler.setFormatter(logging_format)
     app.logger.addHandler(handler)
+    task_logger.addHandler(handler)
     return app
 
 
+task_logger = get_task_logger(__name__)
+task_logger.addHandler(console)
+
+
 app = create_app()
-logger = app.logger
-logger.info('hello world')
+app.logger.info('hello world')
+task_logger.info('Task logger.')
 
 if __name__ == '__main__':
     app.run(debug=True)

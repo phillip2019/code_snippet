@@ -18,6 +18,7 @@ from sqlalchemy import (Column, Integer, String, Boolean,
                         DateTime, ForeignKey, Text, SmallInteger)
 from sqlalchemy.orm import relationship, sessionmaker, scoped_session
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask('app')
 
@@ -92,7 +93,9 @@ class Project(Base):
     project_apps = relationship('ProjectApp', backref='project_apps')
     user = relationship('User', foreign_keys=user_id)
     owner = relationship('User', foreign_keys=owner_id)
-    batch = Column(SmallInteger)
+    batch = Column(SmallInteger, default=2)
+    publish_mode = Column(Integer)
+    project_progress = Column(String(20), default='TE')
 
 
 class ProjectMember(Base):
@@ -230,6 +233,18 @@ def test():
     add_together.delay(randint(0, THOUSAND), randint(0, THOUSAND))
 
 
+def query_user_200():
+    start = datetime.now()
+    Project.query.filter_by(version='4fafasdfadsfadsf').first()
+    print(datetime.now() - start)
+
+    start = datetime.now()
+    for i in range(400):
+        Project.query.filter_by(version='xfdsfafsdf@tongdun.cn{}'.format(i)).first()
+    print(datetime.now() - start)
+
+
 if __name__ == '__main__':
     # app.run()
-    pass
+    with app.app_context():
+        query_user_200()
