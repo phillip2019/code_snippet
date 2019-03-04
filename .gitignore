@@ -10,3 +10,7 @@ tmp/**/*
 
 # pyc.*
 *.pyc
+
+# idea
+arithmetic/.idea/workspace.xml
+**/*.idea/workspace.xml
