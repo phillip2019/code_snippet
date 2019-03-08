@@ -257,8 +257,8 @@ def get_index(name, passwd, input_file, output_file):
 
     # 需要在zues上面申请proxy权限，目标系统为talos-report
     # create_url = 'http://10.58.10.112:8098/task/poc/create'
-    create_url = 'https://talos-report-idnu-s.proxy.tongdun.cn/task/poc/create'
-    query_url = 'https://talos-report-idnu-s.proxy.tongdun.cn/task/poc/query'
+    create_url = 'https://xxxx/task/poc/create'
+    query_url = 'https://xxxx/task/poc/query'
     # query_url = 'http://10.58.10.112:8098/task/poc/query'
 
     # 客户在魔盒开的账号
