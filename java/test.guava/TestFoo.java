@@ -44,6 +44,7 @@ public class TestFoo {
         list.sort(ordering);
         List newList = list.stream().sorted(ordering).collect(Collectors.toList());
         System.out.println(newList);
+        System.out.println("hello world");
     }
 
     @Override
