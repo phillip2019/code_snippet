@@ -49,7 +49,6 @@ public class TestFoo {
     @Override
     public String toString() {
 
-        System.out.println("Hello world");
         return toStringHelper("TestFoo")
                 .add("sortedBy", this.sortedBy)
                 .add("notSortedBy", this.notSortedBy)
