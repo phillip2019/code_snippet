@@ -9,6 +9,9 @@ import org.junit.Test;
 
 import static java.util.concurrent.Executors.*;
 
+/**
+ * @author wuyan
+ */
 public class EventBusTest {
 
     public class EventListener1 {

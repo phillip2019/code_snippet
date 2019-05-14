@@ -1,6 +1,7 @@
 package Observer;
 
 /**
+ * 传统生产者和监听者实现
  * @author wuyan
  */
 public class ObserverDemo {
